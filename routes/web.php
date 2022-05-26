@@ -13,8 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', 'PublicController@index')->name('homepage');
-
 Route::middleware(['guest'])->group(function () {
     Route::get('/login', 'AuthController@loginForm')->name('auth.login.form');
     Route::post('/login', 'AuthController@login')->name('auth.login');
@@ -26,3 +24,5 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
 });
 
 Route::post('/logout', 'AuthController@logout')->middleware(['auth'])->name('auth.logout');
+
+Route::get('/', 'PublicController@index')->name('homepage');

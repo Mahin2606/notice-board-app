@@ -7,6 +7,7 @@ use App\Enums\StoryStatus;
 
 use App\Services\StoryService;
 use App\Http\Requests\StoryRequest;
+use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
@@ -19,38 +20,23 @@ class AdminController extends Controller
 
     public function index()
     {
-        $stories = Story::WithApproved()->paginate(10)->onEachSide(0);
+        $stories = Story::paginate(10)->onEachSide(0);
         return view('admin.dashboard', compact('stories'));
     }
 
-    private function sanitizeInput($input)
+    public function createStory(Request $request)
     {
-        $input = filter_var($input, FILTER_SANITIZE_SPECIAL_CHARS);
-        $input = filter_var($input, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        return $input;
-    }
-
-    public function createStory(StoryRequest $request)
-    {
-        $title = $this->sanitizeInput($request->get('title'));
-        $description = $this->sanitizeInput($request->get('description'));
-
         $data = [
             'user_id' => auth()->id(),
-            'title' => $title,
-            'description' => $description,
+            'title' => $request->get('title'),
+            'description' => $request->get('description'),
             'status' => StoryStatus::PENDING
         ];
 
         $story = $this->storyService->createStory($data);
-        try {
-            
-        } catch (\Exception $e) {
-            
-        }
         
         if ($story) {
-            return redirect()->route('admin.dashboard')->with(['success' => __("Story Added successfully!")]);
+            return redirect()->route('admin.dashboard')->with(['success' => __("Story Added successfully! An approval link has been sent to your email. Please check your email.")]);
         } else {
             return redirect()->route('admin.dashboard')->withErrors(['msg' => __("Oops! Something went wrong. Please try again after sometimes.")]);
         }

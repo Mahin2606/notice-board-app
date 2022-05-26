@@ -1,3 +1,7 @@
+@php
+    use App\Enums\StoryStatus as sStatus;    
+@endphp
+
 @extends('layouts.master')
 
 @section('title', __('Admin Dashboard'))
@@ -27,7 +31,6 @@
                                 <h5>{{ __("List of Stories") }}</h5>
                             </div>
                             <div class="p-2 bd-highlight">
-                                {{-- <a href="#" class="btn btn-light">{{ __("Add New Story") }}</a> --}}
                                 <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#addStoryModal">
                                     {{ __("Add New Story") }}
                                 </button>
@@ -44,6 +47,7 @@
                                     <th scope="col">{{ __("Title") }}</th>
                                     <th scope="col">{{ __("Description") }}</th>
                                     <th scope="col">{{ __("Published By") }}</th>
+                                    <th scope="col">{{ __("Status") }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -51,14 +55,15 @@
                                 <tr>
                                     <td>{{ data_get($story, 'title') }}</td>
                                     <td>{!! data_get($story, 'description') !!}</td>
-                                    <td>{{ data_get($story, 'user.name') }}</td>
+                                    <td>{{ data_get($story, 'title') }}</td>
+                                    <td><span class="badge bg-{{ (data_get($story, 'status') == sStatus::APPROVED) ? 'success' : 'warning' }}">{{ __(ucfirst(data_get($story, 'status'))) }}</span></td>
                                 </tr>
                                 @endforeach
                             </tbody>
                         </table>
                         {{ $stories->appends(request()->all())->links('admin.misc.pagination') }}
                         @else
-                        <div class="alert alert-warning" role="alert">
+                        <div class="alert alert-primary" role="alert">
                             {{ __("No stories available yet.") }}
                         </div>
                         @endif
