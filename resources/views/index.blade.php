@@ -31,7 +31,7 @@
                                     <th scope="col">{{ __("Published By") }}</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="add-story">
                                 @foreach($stories as $story)
                                 <tr>
                                     <td>{{ data_get($story, 'title') }}</td>
@@ -53,3 +53,16 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        jQuery(document).ready(function($) {
+            Echo.channel('story-update')
+                .listen('StoryStatusUpdated', (e) => {
+                    var title = e.title, desc = e.description, user = e.user,
+                        data = '<tr><td>' + title + '</td><td>' + desc + '</td><td>' + user + '</td></tr>';
+                    $('#add-story').prepend(data);
+            });
+        });
+    </script>
+@endpush

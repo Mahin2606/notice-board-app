@@ -8,7 +8,8 @@ class PublicController extends Controller
 {
     public function index()
     {
-        $stories = Story::WithApproved()->paginate(10)->onEachSide(0);
+        $query = Story::WithApproved()->orderBy('id', 'DESC');
+        $stories = $query->paginate(5)->onEachSide(0);
         return view('index', compact('stories'));
     }
 }
