@@ -19,34 +19,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-body">
-                        @include('layouts.partials.alert')
-                        
-                        @if (filled($stories))
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">{{ __("Title") }}</th>
-                                    <th scope="col">{{ __("Description") }}</th>
-                                    <th scope="col">{{ __("Published By") }}</th>
-                                </tr>
-                            </thead>
-                            <tbody id="add-story">
-                                @foreach($stories as $story)
-                                <tr>
-                                    <td>{{ data_get($story, 'title') }}</td>
-                                    <td>{!! data_get($story, 'description') !!}</td>
-                                    <td>{{ data_get($story, 'user.name') }}</td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        {{ $stories->appends(request()->all())->links('admin.misc.pagination') }}
-                        @else
-                        <div class="alert alert-warning" role="alert">
-                            {{ __("No stories available yet.") }}
-                        </div>
-                        @endif
+                    <div class="card-body" id="stories">
+                        @include('stories-row')
                     </div>
                 </div>
             </div>
@@ -56,13 +30,15 @@
 
 @push('scripts')
     <script>
-        jQuery(document).ready(function($) {
-            Echo.channel('story-update')
-                .listen('StoryStatusUpdated', (e) => {
-                    var title = e.title, desc = e.description, user = e.user,
-                        data = '<tr><td>' + title + '</td><td>' + desc + '</td><td>' + user + '</td></tr>';
-                    $('#add-story').prepend(data);
-            });
+        $(document).ready(function() {
+            let element = $('#stories'), url = "{{ route('homepage') }}";
+            setInterval(function () {
+                $.get(url, function(res) {
+                    if (res.status) {
+                        element.html(res.embed)
+                    }
+                });
+            }, 1000 * 30);
         });
     </script>
 @endpush

@@ -13,6 +13,6 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-Broadcast::channel('story-update', function () {
-    return true;
-});
+// Broadcast::channel('story-update', function () {
+//     return true;
+// });

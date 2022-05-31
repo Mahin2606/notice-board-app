@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Story;
 use App\Enums\StoryStatus;
-use App\Events\StoryStatusUpdated;
+
 use App\Services\StoryService;
 use App\Http\Requests\StoryRequest;
 
@@ -62,7 +62,7 @@ class AdminController extends Controller
 
         $story = $this->storyService->approveStory($story);
         if ($story) {
-            event(new StoryStatusUpdated($story));
+            // event(new StoryStatusUpdated($story));
             return redirect()->route('admin.dashboard')->with(['success' => __("Story has been approved successfully!")]);
         } else {
             return redirect()->route('admin.dashboard')->withErrors(['error' => __("Oops! Something went wrong. Please try again after sometimes.")]);
